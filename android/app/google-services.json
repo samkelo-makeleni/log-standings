@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "704549837314",
+    "project_id": "tshwane-reginal-football",
+    "storage_bucket": "tshwane-reginal-football.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:704549837314:android:3116a526c301e45007251b",
+        "android_client_info": {
+          "package_name": "com.samkelomakeleni.logstandings"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkLSCbi8VHdGhmUH_QMMM4UJ993TLRU7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
