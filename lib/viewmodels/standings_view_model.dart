@@ -171,6 +171,8 @@ class StandingsViewModel extends ChangeNotifier {
       result: matchResult,
     );
 
+    // Refresh standings from repository to ensure consistency
+    _standings = await _repository.fetchStandings();
     _results = [matchResult, ..._results];
     _fixtures = _fixtures
         .where(
@@ -180,69 +182,7 @@ class StandingsViewModel extends ChangeNotifier {
         )
         .toList();
 
-    _applyResultToStandings(
-      homeTeam: fixture.homeTeam,
-      awayTeam: fixture.awayTeam,
-      homeScore: homeScore,
-      awayScore: awayScore,
-    );
-
     notifyListeners();
   }
 
-  void _applyResultToStandings({
-    required String homeTeam,
-    required String awayTeam,
-    required int homeScore,
-    required int awayScore,
-  }) {
-    _standings = _standings.map((team) {
-      if (team.teamName == homeTeam) {
-        return _updatedTeamStanding(
-          team: team,
-          goalsFor: homeScore,
-          goalsAgainst: awayScore,
-          isWin: homeScore > awayScore,
-          isDraw: homeScore == awayScore,
-        );
-      }
-
-      if (team.teamName == awayTeam) {
-        return _updatedTeamStanding(
-          team: team,
-          goalsFor: awayScore,
-          goalsAgainst: homeScore,
-          isWin: awayScore > homeScore,
-          isDraw: homeScore == awayScore,
-        );
-      }
-
-      return team;
-    }).toList();
-  }
-
-  TeamStanding _updatedTeamStanding({
-    required TeamStanding team,
-    required int goalsFor,
-    required int goalsAgainst,
-    required bool isWin,
-    required bool isDraw,
-  }) {
-    final wins = team.wins + (isWin ? 1 : 0);
-    final draws = team.draws + (isDraw ? 1 : 0);
-    final losses = team.losses + (!isWin && !isDraw ? 1 : 0);
-    final updatedGoalsFor = team.goalsFor + goalsFor;
-    final updatedGoalsAgainst = team.goalsAgainst + goalsAgainst;
-
-    return team.copyWith(
-      matchesPlayed: team.matchesPlayed + 1,
-      wins: wins,
-      draws: draws,
-      losses: losses,
-      goalsFor: updatedGoalsFor,
-      goalsAgainst: updatedGoalsAgainst,
-      goalDifference: updatedGoalsFor - updatedGoalsAgainst,
-      points: team.points + (isWin ? 3 : (isDraw ? 1 : 0)),
-    );
-  }
 }

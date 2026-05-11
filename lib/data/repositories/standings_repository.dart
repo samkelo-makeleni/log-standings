@@ -1,13 +1,14 @@
-import '../local/local_league_database.dart';
+import '../local/database_factory.dart';
+import '../local/league_database_interface.dart';
 import '../models/match_fixture.dart';
 import '../models/match_result.dart';
 import '../models/team_standing.dart';
 
 class StandingsRepository {
-  StandingsRepository({LocalLeagueDatabase? database})
-    : _database = database ?? LocalLeagueDatabase();
+  StandingsRepository({ILeagueDatabase? database})
+    : _database = database ?? DatabaseFactory.createDatabase(useFirebase: true);
 
-  final LocalLeagueDatabase _database;
+  final ILeagueDatabase _database;
 
   static const List<TeamStanding> _seedStandings = [
     TeamStanding(
@@ -202,44 +203,44 @@ class StandingsRepository {
     MatchFixture(
       homeTeam: 'Pool of Life',
       awayTeam: 'Powerhouse',
-      dateLabel: 'Week 8',
-      timeLabel: 'Pending',
-      venue: 'To be confirmed',
+      dateLabel: '16 May 2026',
+      timeLabel: '16h00',
+      venue: 'Transorange Deaf School',
     ),
     MatchFixture(
       homeTeam: 'RCWC',
       awayTeam: 'CAWJ',
-      dateLabel: 'Week 8',
-      timeLabel: 'Pending',
-      venue: 'To be confirmed',
+      dateLabel: '16 May 2026',
+      timeLabel: '16h00',
+      venue: 'Transorange Soccer ground',
     ),
     MatchFixture(
       homeTeam: 'GMC',
       awayTeam: 'Salvakop',
-      dateLabel: 'Week 8',
-      timeLabel: 'Pending',
-      venue: 'To be confirmed',
+      dateLabel: '16 May 2026',
+      timeLabel: '14h30',
+      venue: 'Weskopies',
     ),
     MatchFixture(
       homeTeam: 'Downtown',
       awayTeam: 'Redeeming',
-      dateLabel: 'Week 8',
-      timeLabel: 'Pending',
-      venue: 'To be confirmed',
+      dateLabel: '16 May 2026',
+      timeLabel: '14h30',
+      venue: 'Transorange Deaf School',
     ),
     MatchFixture(
       homeTeam: 'Hope of Nations',
       awayTeam: 'Ignite International',
-      dateLabel: 'Week 8',
-      timeLabel: 'Pending',
-      venue: 'To be confirmed',
+      dateLabel: '16 May 2026',
+      timeLabel: '16h00',
+      venue: 'Weskopies',
     ),
     MatchFixture(
       homeTeam: 'Romans Catholic',
       awayTeam: 'Methodist',
-      dateLabel: 'Week 8',
-      timeLabel: 'Pending',
-      venue: 'To be confirmed',
+      dateLabel: '16 May 2026',
+      timeLabel: '14h30',
+      venue: 'Transorange Soccer ground',
     ),
     MatchFixture(
       homeTeam: 'Powerhouse',

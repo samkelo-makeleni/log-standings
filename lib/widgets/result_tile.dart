@@ -36,6 +36,8 @@ class ResultTile extends StatelessWidget {
               Expanded(
                 child: Text(
                   result.homeTeam,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -62,6 +64,8 @@ class ResultTile extends StatelessWidget {
                 child: Text(
                   result.awayTeam,
                   textAlign: TextAlign.end,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -80,6 +84,8 @@ class ResultTile extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               '${result.homeTeam} scorers: ${_formatScorers(result.homeScorers)}',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: Colors.black87),
@@ -89,6 +95,8 @@ class ResultTile extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               '${result.awayTeam} scorers: ${_formatScorers(result.awayScorers)}',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: Colors.black87),

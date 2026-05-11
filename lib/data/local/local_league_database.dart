@@ -8,6 +8,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../models/goal_scorer.dart';
 import '../models/match_fixture.dart';
 import '../models/match_result.dart';
+import 'league_database_interface.dart';
 
 class LocalLeagueDatabase {
   sqflite.Database? _database;
@@ -222,13 +223,4 @@ class LocalLeagueDatabase {
       },
     );
   }
-}
-
-class StoredMatchRecord {
-  const StoredMatchRecord({required this.venue, required this.result});
-
-  final String venue;
-  final MatchResult result;
-
-  String get fixtureKey => '${result.homeTeam}|${result.awayTeam}';
 }

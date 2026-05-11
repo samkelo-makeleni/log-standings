@@ -85,6 +85,8 @@ class FixturesTab extends StatelessWidget {
                         Expanded(
                           child: Text(
                             fixture.homeTeam,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -115,6 +117,8 @@ class FixturesTab extends StatelessWidget {
                           child: Text(
                             fixture.awayTeam,
                             textAlign: TextAlign.right,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),

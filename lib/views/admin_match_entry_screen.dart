@@ -101,35 +101,41 @@ class _AdminMatchEntryScreenState extends State<AdminMatchEntryScreen> {
                       ).textTheme.bodyMedium?.copyWith(color: Colors.black54),
                     ),
                     const SizedBox(height: 24),
-                    DropdownButtonFormField<MatchFixture>(
-                      initialValue: _selectedFixture,
-                      decoration: const InputDecoration(
-                        labelText: 'Match fixture',
-                        prefixIcon: Icon(Icons.sports_soccer_outlined),
-                      ),
-                      items: fixtures
-                          .map(
-                            (fixture) => DropdownMenuItem(
-                              value: fixture,
-                              child: Text(
-                                '${fixture.homeTeam} vs ${fixture.awayTeam}',
+                    SizedBox(
+                      width: double.infinity,
+                      child: DropdownButtonFormField<MatchFixture>(
+                        initialValue: _selectedFixture,
+                        decoration: const InputDecoration(
+                          labelText: 'Match fixture',
+                          prefixIcon: Icon(Icons.sports_soccer_outlined),
+                        ),
+                        isExpanded: true,
+                        items: fixtures
+                            .map(
+                              (fixture) => DropdownMenuItem(
+                                value: fixture,
+                                child: Text(
+                                  '${fixture.homeTeam} vs ${fixture.awayTeam}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: fixtures.isEmpty
-                          ? null
-                          : (fixture) {
-                              setState(() {
-                                _selectedFixture = fixture;
-                              });
-                            },
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Select the match to log.';
-                        }
-                        return null;
-                      },
+                            )
+                            .toList(),
+                        onChanged: fixtures.isEmpty
+                            ? null
+                            : (fixture) {
+                                setState(() {
+                                  _selectedFixture = fixture;
+                                });
+                              },
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Select the match to log.';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Row(
