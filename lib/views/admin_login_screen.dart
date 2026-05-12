@@ -14,7 +14,7 @@ class AdminLoginScreen extends StatefulWidget {
 
 class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _isSubmitting = false;
@@ -23,7 +23,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -39,7 +39,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     });
 
     final isValid = await context.read<StandingsViewModel>().loginAdmin(
-      username: _usernameController.text,
+      email: _emailController.text,
       password: _passwordController.text,
     );
 
@@ -53,7 +53,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
 
     if (!isValid) {
       setState(() {
-        _errorText = 'Invalid admin credentials.';
+        _errorText = 'Invalid email or password.';
       });
       return;
     }
@@ -96,15 +96,19 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                       ),
                       const SizedBox(height: 24),
                       TextFormField(
-                        controller: _usernameController,
+                        controller: _emailController,
                         textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
-                          labelText: 'Username',
-                          prefixIcon: Icon(Icons.person_outline),
+                          labelText: 'Email',
+                          prefixIcon: Icon(Icons.email_outlined),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Enter the admin username.';
+                            return 'Enter your email address.';
+                          }
+                          if (!value.contains('@')) {
+                            return 'Enter a valid email address.';
                           }
                           return null;
                         },

@@ -6,14 +6,17 @@ import '../data/models/match_result.dart';
 import '../data/models/team_standing.dart';
 import '../data/models/top_goal_scorer.dart';
 import '../data/repositories/standings_repository.dart';
+import '../data/services/firebase_auth_service.dart';
 
 enum LeagueTab { standings, fixtures, results, topScorers }
 
 class StandingsViewModel extends ChangeNotifier {
   StandingsViewModel({required StandingsRepository repository})
-    : _repository = repository;
+    : _repository = repository,
+      _authService = FirebaseAuthService();
 
   final StandingsRepository _repository;
+  final FirebaseAuthService _authService;
 
   bool _isLoading = false;
   bool _isAdminLoggedIn = false;
@@ -118,32 +121,32 @@ class StandingsViewModel extends ChangeNotifier {
   }
 
   Future<bool> loginAdmin({
-    required String username,
+    required String email,
     required String password,
   }) async {
-    await Future<void>.delayed(const Duration(milliseconds: 250));
-
-    final normalizedUsername = username.trim().toLowerCase();
-    final normalizedPassword = password.trim().toLowerCase();
-
-    final isValid =
-        normalizedUsername == 'mandla1' && normalizedPassword == 'password1';
-
-    if (isValid) {
+    try {
+      await _authService.login(email: email, password: password);
       _isAdminLoggedIn = true;
       notifyListeners();
+      return true;
+    } catch (e) {
+      // Login failed
+      return false;
     }
-
-    return isValid;
   }
 
-  void logoutAdmin() {
+  void logoutAdmin() async {
     if (!_isAdminLoggedIn) {
       return;
     }
 
-    _isAdminLoggedIn = false;
-    notifyListeners();
+    try {
+      await _authService.signOut();
+      _isAdminLoggedIn = false;
+      notifyListeners();
+    } catch (e) {
+      // Handle logout error
+    }
   }
 
   Future<void> logMatchResult({
