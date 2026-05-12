@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  static final RegExp _gmailPattern = RegExp(r'^[A-Za-z0-9._%+-]+@gmail\.com$');
 
   // Get current user
   User? get currentUser => _firebaseAuth.currentUser;
@@ -15,14 +16,23 @@ class FirebaseAuthService {
   // Get current user email
   String? get currentUserEmail => currentUser?.email;
 
+  bool isValidAdminEmail(String email) {
+    return _gmailPattern.hasMatch(email.trim().toLowerCase());
+  }
+
   /// Sign up with email and password
   Future<String?> signUp({
     required String email,
     required String password,
   }) async {
+    final normalizedEmail = email.trim().toLowerCase();
+    if (!isValidAdminEmail(normalizedEmail)) {
+      throw 'Admin usernames must be Gmail addresses.';
+    }
+
     try {
       final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
+        email: normalizedEmail,
         password: password,
       );
       return userCredential.user?.uid;
@@ -38,9 +48,14 @@ class FirebaseAuthService {
     required String email,
     required String password,
   }) async {
+    final normalizedEmail = email.trim().toLowerCase();
+    if (!isValidAdminEmail(normalizedEmail)) {
+      throw 'Admin usernames must be Gmail addresses.';
+    }
+
     try {
       final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
+        email: normalizedEmail,
         password: password,
       );
       return userCredential.user?.uid;

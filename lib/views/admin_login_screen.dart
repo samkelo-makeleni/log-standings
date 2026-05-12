@@ -18,6 +18,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final _passwordController = TextEditingController();
 
   bool _isSubmitting = false;
+  bool _isRegisterMode = false;
   bool _obscurePassword = true;
   String? _errorText;
 
@@ -38,10 +39,16 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       _errorText = null;
     });
 
-    final isValid = await context.read<StandingsViewModel>().loginAdmin(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
+    final viewModel = context.read<StandingsViewModel>();
+    final error = _isRegisterMode
+        ? await viewModel.registerAdmin(
+            email: _emailController.text,
+            password: _passwordController.text,
+          )
+        : await viewModel.loginAdmin(
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
 
     if (!mounted) {
       return;
@@ -51,9 +58,9 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       _isSubmitting = false;
     });
 
-    if (!isValid) {
+    if (error != null) {
       setState(() {
-        _errorText = 'Invalid email or password.';
+        _errorText = error;
       });
       return;
     }
@@ -65,8 +72,12 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.read<StandingsViewModel>();
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Admin Login')),
+      appBar: AppBar(
+        title: Text(_isRegisterMode ? 'Admin Registration' : 'Admin Login'),
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -89,7 +100,9 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Sign in to capture final scores and goal scorers after each match.',
+                        _isRegisterMode
+                            ? 'Create an admin account first. The username must be your Gmail address.'
+                            : 'Sign in with your registered Gmail admin account to capture final scores and goal scorers.',
                         style: Theme.of(
                           context,
                         ).textTheme.bodyMedium?.copyWith(color: Colors.black54),
@@ -104,11 +117,12 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           prefixIcon: Icon(Icons.email_outlined),
                         ),
                         validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
+                          final email = value?.trim() ?? '';
+                          if (email.isEmpty) {
                             return 'Enter your email address.';
                           }
-                          if (!value.contains('@')) {
-                            return 'Enter a valid email address.';
+                          if (!viewModel.isValidAdminEmail(email)) {
+                            return 'Admin username must be a Gmail address.';
                           }
                           return null;
                         },
@@ -138,6 +152,9 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Enter the admin password.';
                           }
+                          if (_isRegisterMode && value.length < 6) {
+                            return 'Use at least 6 characters.';
+                          }
                           return null;
                         },
                       ),
@@ -166,13 +183,40 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                                 )
                               : const Icon(Icons.admin_panel_settings_outlined),
                           label: Text(
-                            _isSubmitting ? 'Signing in...' : 'Sign In',
+                            _isSubmitting
+                                ? (_isRegisterMode
+                                      ? 'Registering...'
+                                      : 'Signing in...')
+                                : (_isRegisterMode
+                                      ? 'Register Admin'
+                                      : 'Sign In'),
                           ),
                         ),
                       ),
                       const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: _isSubmitting
+                              ? null
+                              : () {
+                                  setState(() {
+                                    _isRegisterMode = !_isRegisterMode;
+                                    _errorText = null;
+                                  });
+                                },
+                          child: Text(
+                            _isRegisterMode
+                                ? 'Already registered? Sign In'
+                                : 'Register First',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
                       Text(
-                        'Admin credentials: Mandla1 / Password1',
+                        _isRegisterMode
+                            ? 'Only registered Gmail accounts can be used as admin usernames.'
+                            : 'Admins must register before logging in, and the username must be their Gmail account.',
                         style: Theme.of(
                           context,
                         ).textTheme.bodySmall?.copyWith(color: Colors.black54),

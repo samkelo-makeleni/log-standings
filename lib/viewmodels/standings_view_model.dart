@@ -28,6 +28,7 @@ class StandingsViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   bool get isAdminLoggedIn => _isAdminLoggedIn;
+  bool isValidAdminEmail(String email) => _authService.isValidAdminEmail(email);
   String get searchQuery => _searchQuery;
   LeagueTab get selectedTab => _selectedTab;
   List<MatchFixture> get fixtures => _fixtures;
@@ -120,7 +121,21 @@ class StandingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> loginAdmin({
+  Future<String?> registerAdmin({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _authService.signUp(email: email, password: password);
+      _isAdminLoggedIn = true;
+      notifyListeners();
+      return null;
+    } catch (e) {
+      return e.toString().replaceFirst('Exception: ', '');
+    }
+  }
+
+  Future<String?> loginAdmin({
     required String email,
     required String password,
   }) async {
@@ -128,10 +143,9 @@ class StandingsViewModel extends ChangeNotifier {
       await _authService.login(email: email, password: password);
       _isAdminLoggedIn = true;
       notifyListeners();
-      return true;
+      return null;
     } catch (e) {
-      // Login failed
-      return false;
+      return e.toString().replaceFirst('Exception: ', '');
     }
   }
 
@@ -187,5 +201,4 @@ class StandingsViewModel extends ChangeNotifier {
 
     notifyListeners();
   }
-
 }
