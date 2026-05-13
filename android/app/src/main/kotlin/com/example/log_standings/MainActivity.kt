@@ -1,4 +1,4 @@
-package com.example.log_standings
+package com.samkelomakeleni.logstandings
 
 import io.flutter.embedding.android.FlutterActivity
 

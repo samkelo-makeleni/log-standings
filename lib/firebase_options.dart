@@ -1,9 +1,62 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 
 /// Firebase configuration for different platforms
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
-    return android;
+    if (kIsWeb) {
+      _ensureConfigured(
+        platformName: 'web',
+        requiredValues: [
+          web.apiKey,
+          web.appId,
+          web.messagingSenderId,
+          web.authDomain,
+        ],
+      );
+      return web;
+    }
+
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return android;
+      case TargetPlatform.iOS:
+        _ensureConfigured(
+          platformName: 'iOS',
+          requiredValues: [
+            ios.apiKey,
+            ios.appId,
+            ios.messagingSenderId,
+            ios.iosBundleId,
+          ],
+        );
+        return ios;
+      case TargetPlatform.macOS:
+      case TargetPlatform.windows:
+      case TargetPlatform.linux:
+        throw UnsupportedError(
+          'Firebase is configured only for Android, iOS, and web.',
+        );
+      case TargetPlatform.fuchsia:
+        throw UnsupportedError('Firebase is not configured for Fuchsia.');
+    }
+  }
+
+  static void _ensureConfigured({
+    required String platformName,
+    required List<String?> requiredValues,
+  }) {
+    final hasPlaceholder = requiredValues.any(
+      (value) => value == null || value.isEmpty || value.startsWith('YOUR_'),
+    );
+
+    if (hasPlaceholder) {
+      throw UnsupportedError(
+        'Firebase $platformName configuration is incomplete. '
+        'Run `flutterfire configure` to update lib/firebase_options.dart.',
+      );
+    }
   }
 
   /// Firebase options for Android
@@ -17,22 +70,22 @@ class DefaultFirebaseOptions {
 
   /// Firebase options for iOS - Update with your iOS credentials from GoogleService-Info.plist
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR_IOS_API_KEY',
-    appId: 'YOUR_IOS_APP_ID',
-    messagingSenderId: 'YOUR_IOS_MESSAGING_SENDER_ID',
+    apiKey: 'AIzaSyAuBecdfIbcs53aMz1oDBZOrRNMwzmEQbY',
+    appId: '1:704549837314:ios:9bb937f3498a7eac07251b',
+    messagingSenderId: '704549837314',
     projectId: 'tshwane-reginal-football',
     storageBucket: 'tshwane-reginal-football.firebasestorage.app',
-    iosClientId: 'YOUR_IOS_CLIENT_ID',
-    iosBundleId: 'YOUR_IOS_BUNDLE_ID',
+    iosBundleId: 'com.samkelomakeleni.logstandings',
   );
 
   /// Firebase options for Web
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR_WEB_API_KEY',
-    appId: 'YOUR_WEB_APP_ID',
-    messagingSenderId: 'YOUR_WEB_MESSAGING_SENDER_ID',
+    apiKey: 'AIzaSyBTroh9OrkcUwpfllpBSYmkIjnLeE1XKSA',
+    appId: '1:704549837314:web:8159d401ceefdf0e07251b',
+    messagingSenderId: '704549837314',
     projectId: 'tshwane-reginal-football',
-    authDomain: 'YOUR_AUTH_DOMAIN',
+    authDomain: 'tshwane-reginal-football.firebaseapp.com',
     storageBucket: 'tshwane-reginal-football.firebasestorage.app',
+    measurementId: 'G-9RFYMZKR1N',
   );
 }

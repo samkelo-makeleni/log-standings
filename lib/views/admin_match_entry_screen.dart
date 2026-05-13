@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../data/models/goal_scorer.dart';
 import '../data/models/match_fixture.dart';
 import '../viewmodels/standings_view_model.dart';
 import '../widgets/card_decoration.dart';
+import 'standings_screen.dart';
 
 class AdminMatchEntryScreen extends StatefulWidget {
   const AdminMatchEntryScreen({super.key});
@@ -321,24 +323,39 @@ class _AdminMatchEntryScreenState extends State<AdminMatchEntryScreen> {
       dateLabel: _dateController.text.trim(),
     );
 
+    // Clear form data
+    _homeScoreController.clear();
+    _awayScoreController.clear();
+    _disposeScorerInputs(_homeScorers);
+    _disposeScorerInputs(_awayScorers);
+    _homeScorers.clear();
+    _awayScorers.clear();
+
+    if (!mounted) {
+      return;
+    }
+
+    // Update UI state
     setState(() {
-      _homeScoreController.clear();
-      _awayScoreController.clear();
-      _disposeScorerInputs(_homeScorers);
-      _disposeScorerInputs(_awayScorers);
-      _homeScorers.clear();
-      _awayScorers.clear();
       final remainingFixtures = viewModel.fixtures;
       _selectedFixture = remainingFixtures.isEmpty
           ? null
           : remainingFixtures.first;
     });
 
+    // Update active tab and navigate
     viewModel.updateTab(LeagueTab.results);
-    if (!mounted) {
-      return;
-    }
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    
+    // Schedule navigation for the next frame to ensure widget is ready
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => const StandingsScreen(),
+          ),
+        );
+      }
+    });
   }
 
   List<GoalScorer> _collectScorers(List<_ScorerInput> inputs) {

@@ -119,6 +119,8 @@ class FirebaseAuthService {
         return 'The email address is invalid.';
       case 'operation-not-allowed':
         return 'Email/password accounts are not enabled.';
+      case 'configuration-not-found':
+        return 'Firebase Authentication is not configured for this platform yet. Verify the Firebase project, enable Email/Password sign-in, and update the platform values in lib/firebase_options.dart.';
       case 'user-disabled':
         return 'The user account has been disabled.';
       case 'user-not-found':
