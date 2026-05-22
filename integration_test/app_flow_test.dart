@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show TextField;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +34,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Methodist'), findsWidgets);
-    expect(find.text('Ignite International'), findsNothing);
+    expect(find.text('Pool of Life'), findsNothing);
 
     await tester.tap(find.text('Fixtures'));
     await tester.pumpAndSettle();
