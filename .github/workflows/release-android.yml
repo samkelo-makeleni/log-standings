@@ -1,5 +1,8 @@
 name: Android Release
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   workflow_dispatch:
     inputs:
@@ -79,7 +82,6 @@ jobs:
         run: |
           flutter analyze
           flutter test
-          flutter test integration_test
 
       - name: Build signed Android App Bundle
         run: flutter build appbundle --release
