@@ -17,6 +17,11 @@ void main() {
   ) async {
     final repository = StandingsRepository(database: FakeLeagueDatabase());
 
+    Future<void> settleUI() async {
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+    }
+
     await tester.pumpWidget(
       ChangeNotifierProvider(
         create: (_) =>
@@ -25,31 +30,31 @@ void main() {
       ),
     );
 
-    await tester.pumpAndSettle();
+    await settleUI();
 
     expect(find.text('Season Snapshot'), findsOneWidget);
     expect(find.text('Ignite International'), findsWidgets);
 
     await tester.enterText(find.byType(TextField), 'Methodist');
-    await tester.pumpAndSettle();
+    await settleUI();
 
     expect(find.text('Methodist'), findsWidgets);
     expect(find.text('Pool of Life'), findsNothing);
 
     await tester.tap(find.text('Fixtures'));
-    await tester.pumpAndSettle();
+    await settleUI();
 
     expect(find.text('Matches grouped by week.'), findsOneWidget);
     expect(find.text('Powerhouse'), findsWidgets);
 
     await tester.tap(find.text('Results'));
-    await tester.pumpAndSettle();
+    await settleUI();
 
     expect(find.text('Recent Results'), findsOneWidget);
     expect(find.text('Winner: Powerhouse'), findsOneWidget);
 
     await tester.tap(find.text('Top Scorers'));
-    await tester.pumpAndSettle();
+    await settleUI();
 
     expect(find.text('Top Goal Scorers'), findsOneWidget);
     expect(
@@ -58,7 +63,7 @@ void main() {
     );
 
     await tester.tap(find.text('Standings'));
-    await tester.pumpAndSettle();
+    await settleUI();
 
     expect(find.byType(TextField), findsOneWidget);
   });
