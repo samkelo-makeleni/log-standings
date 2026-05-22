@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  FirebaseAuth get _firebaseAuth => FirebaseAuth.instance;
   static final RegExp _gmailPattern = RegExp(r'^[A-Za-z0-9._%+-]+@gmail\.com$');
 
   // Get current user
